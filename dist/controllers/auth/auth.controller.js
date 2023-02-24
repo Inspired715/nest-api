@@ -30,15 +30,6 @@ let AuthController = class AuthController {
     getAuth(uid) {
         return this.authService.getAuth(uid);
     }
-    createAuth(auth) {
-        return this.authService.createAuth(auth);
-    }
-    updateAuth(auth) {
-        return this.authService.updateAuth(auth);
-    }
-    deleteAuth(id) {
-        return this.authService.deleteAuth(id);
-    }
 };
 __decorate([
     (0, common_1.UseGuards)(strategy_custom_1.StressAuthGuard),
@@ -53,7 +44,7 @@ __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Array)
+    __metadata("design:returntype", Promise)
 ], AuthController.prototype, "getAllAuth", null);
 __decorate([
     (0, common_1.UseGuards)(strategy_jwt_1.JwtAuthGuard),
@@ -61,32 +52,8 @@ __decorate([
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", Object)
+    __metadata("design:returntype", Promise)
 ], AuthController.prototype, "getAuth", null);
-__decorate([
-    (0, common_1.UseGuards)(strategy_jwt_1.JwtAuthGuard),
-    (0, common_1.Post)('/create'),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Object)
-], AuthController.prototype, "createAuth", null);
-__decorate([
-    (0, common_1.UseGuards)(strategy_jwt_1.JwtAuthGuard),
-    (0, common_1.Post)('/update'),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Object)
-], AuthController.prototype, "updateAuth", null);
-__decorate([
-    (0, common_1.UseGuards)(strategy_jwt_1.JwtAuthGuard),
-    (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", void 0)
-], AuthController.prototype, "deleteAuth", null);
 AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])

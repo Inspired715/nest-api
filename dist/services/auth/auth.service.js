@@ -8,78 +8,32 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
+const auth_entity_1 = require("../../entities/auth/auth.entity");
+const typeorm_1 = require("@nestjs/typeorm");
+const typeorm_2 = require("typeorm");
 let AuthService = class AuthService {
-    constructor(jwtTokenService) {
+    constructor(authRepository, jwtTokenService) {
+        this.authRepository = authRepository;
         this.jwtTokenService = jwtTokenService;
-        this.authList = [
-            {
-                id: 1,
-                date: new Date(),
-                user_name: 'ghost1',
-                token: 'ff',
-                user_email: 'ghost1@gmail.com'
-            },
-            {
-                id: 2,
-                date: new Date(),
-                user_name: 'ghost2',
-                token: '',
-                user_email: 'ghost2@gmail.com'
-            },
-            {
-                id: 3,
-                date: new Date(),
-                user_name: 'ghost3',
-                token: '',
-                user_email: 'ghost3@gmail.com'
-            },
-            {
-                id: 4,
-                date: new Date(),
-                user_name: 'ghost4',
-                token: '',
-                user_email: 'ghost4@gmail.com'
-            },
-            {
-                id: 5,
-                date: new Date(),
-                user_name: 'ghost5',
-                token: '',
-                user_email: 'ghost5@gmail.com'
-            }
-        ];
     }
-    getAllAuth() {
-        return this.authList;
+    async getAllAuth() {
+        let sql = "select * from users";
+        return await this.authRepository.query(sql);
     }
-    getAuth(id) {
-        const auth = this.authList.find(auths => auths.id === id);
-        if (!auth) {
-            throw new common_1.NotFoundException('Not existed. Please registe first');
-        }
-        return auth;
-    }
-    createAuth(auth) {
-        this.authList.push(auth);
-        return auth;
-    }
-    updateAuth(auth) {
-        this.authList[auth.id] = auth;
-        return auth;
-    }
-    deleteAuth(id) {
-        const index = this.authList.findIndex(item => item.id === id);
-        if (index === -1) {
-            throw new common_1.NotFoundException('Auth not found.');
-        }
-        this.authList.splice(index, 1);
+    async getAuth(id) {
+        let sql = "select * from users where id=" + id;
+        return await this.authRepository.query(sql);
     }
     async validateUser(email, password) {
-        const auth = this.authList.find(auths => auths.user_email === email);
+        let sql = "select user_email from users where user_email='" + email + "'";
+        const auth = this.authRepository.query(sql);
         if (auth)
             return true;
         else
@@ -94,7 +48,9 @@ let AuthService = class AuthService {
 };
 AuthService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [jwt_1.JwtService])
+    __param(0, (0, typeorm_1.InjectRepository)(auth_entity_1.Auth)),
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        jwt_1.JwtService])
 ], AuthService);
 exports.AuthService = AuthService;
 //# sourceMappingURL=auth.service.js.map

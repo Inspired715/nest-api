@@ -1,8 +1,8 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Post, UseGuards, Request } from '@nestjs/common';
 import { AuthService } from '../../services/auth/auth.service';
-import { AuthModel } from '../../modules/auth/auth.interface';
 import { StressAuthGuard } from '../../strategy/strategy-custom';
 import { JwtAuthGuard } from '../../strategy/strategy-jwt';
+import { Auth } from '../../entities/auth/auth.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -16,32 +16,14 @@ export class AuthController {
     
     @UseGuards(JwtAuthGuard)
     @Get()
-    public getAllAuth(): Array<AuthModel> {
+    public getAllAuth(): Promise<Auth[]>  {
         return this.authService.getAllAuth();
     }
 
     @UseGuards(JwtAuthGuard)
     @Get(':id')
-    public getAuth(@Param('id', ParseIntPipe) uid: number): AuthModel {
+    public getAuth(@Param('id', ParseIntPipe) uid: number): Promise<Auth> {
         return this.authService.getAuth(uid);
-    }
-
-    @UseGuards(JwtAuthGuard)
-    @Post('/create')
-    public createAuth(@Body() auth: AuthModel): AuthModel {
-        return this.authService.createAuth(auth);
-    }
-
-    @UseGuards(JwtAuthGuard)
-    @Post('/update')
-    public updateAuth(@Body() auth: AuthModel): AuthModel {
-        return this.authService.updateAuth(auth);
-    }
-    
-    @UseGuards(JwtAuthGuard)
-    @Delete(':id')
-    public deleteAuth(@Param('id', ParseIntPipe) id: number): void {
-        return this.authService.deleteAuth(id);
     }
 }
 

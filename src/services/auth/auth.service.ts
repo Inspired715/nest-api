@@ -1,86 +1,31 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { AuthModel } from '../../modules/auth/auth.interface';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Auth } from '../../entities/auth/auth.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AuthService {
-    private authList: Array<AuthModel> = [
-        {
-            id: 1,
-            date: new Date(),
-            user_name: 'ghost1',
-            token:'ff',
-            user_email: 'ghost1@gmail.com'
-        },
-        {
-            id: 2,
-            date: new Date(),
-            user_name: 'ghost2',
-            token:'',
-            user_email: 'ghost2@gmail.com'
-        },
-        {
-            id: 3,
-            date: new Date(),
-            user_name: 'ghost3',
-            token:'',
-            user_email: 'ghost3@gmail.com'
-        },
-        {
-            id: 4,
-            date: new Date(),
-            user_name: 'ghost4',
-            token:'',
-            user_email: 'ghost4@gmail.com'
-        },
-        {
-            id: 5,
-            date: new Date(),
-            user_name: 'ghost5',
-            token:'',
-            user_email: 'ghost5@gmail.com'
-        }
-    ];
 
-    constructor(private jwtTokenService: JwtService){}
+    constructor(
+        @InjectRepository(Auth)
+        private readonly authRepository: Repository<Auth>,
+        private jwtTokenService: JwtService
+    ){}
 
-    public getAllAuth(): Array<AuthModel> {
-        return this.authList;
+    async getAllAuth(): Promise< Auth[]> {
+        let sql = "select * from users";
+        return await this.authRepository.query(sql);
     }
 
-    public getAuth(id: number): AuthModel {
-        const auth: AuthModel = this.authList.find(auths => auths.id === id);
-
-        if (!auth) {
-          throw new NotFoundException('Not existed. Please registe first');
-        }
-      
-        return auth;
-    }
-
-    public createAuth(auth : AuthModel) : AuthModel{
-        this.authList.push(auth);
-        return auth;
-    }
-
-    public updateAuth(auth : AuthModel) : AuthModel{
-        this.authList[auth.id] = auth;
-        return auth;
-    }
-
-    public deleteAuth(id: number): void {
-        const index: number = this.authList.findIndex(item => item.id === id);
-      
-        if (index === -1) {
-          throw new NotFoundException('Auth not found.');      
-        }
-      
-        this.authList.splice(index, 1);
+    async getAuth(id: number): Promise<Auth> {
+        let sql = "select * from users where id=" + id;
+        return await this.authRepository.query(sql);
     }
 
     async validateUser(email: String, password: String): Promise<any>{
-
-        const auth: AuthModel = this.authList.find(auths => auths.user_email === email);
+        let sql = "select user_email from users where user_email='" + email + "'";
+        const auth: any = this.authRepository.query(sql);
 
         if(auth)
             return true;

@@ -11,6 +11,8 @@ const common_1 = require("@nestjs/common");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const auth_module_1 = require("./modules/auth/auth.module");
+const typeorm_1 = require("@nestjs/typeorm");
+const auth_entity_1 = require("./entities/auth/auth.entity");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -18,7 +20,18 @@ AppModule = __decorate([
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
         imports: [
-            auth_module_1.AuthModule,
+            typeorm_1.TypeOrmModule.forRoot({
+                type: 'postgres',
+                host: '192.168.203.130',
+                port: 5432,
+                username: 'postgres',
+                password: 'myPassword',
+                database: 'postgres',
+                schema: 'public',
+                entities: [auth_entity_1.Auth],
+                synchronize: true
+            }),
+            auth_module_1.AuthModule
         ],
     })
 ], AppModule);
