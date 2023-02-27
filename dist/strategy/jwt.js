@@ -12,8 +12,8 @@ class JwtStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strate
             secretOrKey: KEY.PRIMARY_KEY
         });
     }
-    async validate(payload) {
-        return { email: payload.email };
+    async validate() {
+        return true;
     }
 }
 exports.JwtStrategy = JwtStrategy;
